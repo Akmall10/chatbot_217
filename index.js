@@ -5,42 +5,70 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static("public"));
+
+function getGeminiConfig() {
+    return {
+        apiKey: process.env.LLM_API_KEY,
+        baseUrl: process.env.LLM_BASE_URL,
+        model: process.env.LLM_MODEL,
+    };
+}
 
 // Halaman utama
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
 
+app.get("/health", (req, res) => {
+    const { apiKey, baseUrl, model } = getGeminiConfig();
+
+    res.json({
+        status: "ok",
+        provider: "Google Gemini",
+        model: model || "belum dikonfigurasi",
+        configured: Boolean(apiKey && baseUrl && model),
+    });
+});
+
 // API Chatbot Gemini
 app.post("/api/chat", async (req, res) => {
     try {
-        const messages = req.body.messages;
+        const { messages } = req.body || {};
+        const { apiKey, baseUrl, model } = getGeminiConfig();
 
-        const apiKey = process.env.LLM_API_KEY;
-        const baseUrl = process.env.LLM_BASE_URL;
-        const model = process.env.LLM_MODEL;
-
-        // Validasi konfigurasi
         if (!apiKey || !baseUrl || !model) {
             return res.status(500).json({
-                error: "Konfigurasi API pada file .env belum lengkap"
+                error: "Konfigurasi API pada file .env belum lengkap. Silakan isi LLM_API_KEY, LLM_BASE_URL, dan LLM_MODEL."
             });
         }
 
         if (!Array.isArray(messages) || messages.length === 0) {
             return res.status(400).json({
-                error: "Messages harus berupa array dan tidak boleh kosong"
+                error: "Messages harus berupa array dan tidak boleh kosong."
+            });
+        }
+
+        const sanitizedMessages = messages
+            .filter((msg) => msg && typeof msg === "object")
+            .map((msg) => ({
+                role: msg.role || "user",
+                content: String(msg.content || "").trim()
+            }))
+            .filter((msg) => msg.content);
+
+        if (sanitizedMessages.length === 0) {
+            return res.status(400).json({
+                error: "Pesan yang dikirim tidak valid."
             });
         }
 
         console.log("Menghubungkan ke Google Gemini...");
         console.log("Model:", model);
 
-        // Request ke Gemini
         const response = await fetch(
             `${baseUrl.replace(/\/+$/, "")}/chat/completions`,
             {
@@ -50,8 +78,8 @@ app.post("/api/chat", async (req, res) => {
                     "Authorization": `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: model,
-                    messages: messages,
+                    model,
+                    messages: sanitizedMessages,
                     temperature: 0.7,
                     max_tokens: 1500,
                     stream: true
@@ -59,10 +87,8 @@ app.post("/api/chat", async (req, res) => {
             }
         );
 
-        // Pemeriksaan respons API
         if (!response.ok) {
             const errorData = await response.text();
-
             console.error("Gemini API Error:", errorData);
 
             return res.status(response.status).json({
@@ -70,13 +96,11 @@ app.post("/api/chat", async (req, res) => {
             });
         }
 
-        // Header streaming
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
         res.flushHeaders();
 
-        // Meneruskan streaming Gemini ke frontend
         if (!response.body) {
             throw new Error("Response body tidak tersedia");
         }
@@ -97,9 +121,7 @@ app.post("/api/chat", async (req, res) => {
         }
 
         res.end();
-
         console.log("Jawaban Gemini berhasil dikirim.");
-
     } catch (error) {
         console.error("Server Error:", error);
 
@@ -113,7 +135,6 @@ app.post("/api/chat", async (req, res) => {
     }
 });
 
-// Menjalankan server
 app.listen(PORT, () => {
     console.log("--------------------------------");
     console.log(" CHATBOT AI BERHASIL DIJALANKAN");
