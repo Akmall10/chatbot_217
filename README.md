@@ -38,8 +38,14 @@ Aplikasi akan berjalan di `http://localhost:3000`.
 ```env
 LLM_API_KEY=your_api_key
 LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
-LLM_MODEL=gemini-2.5-flash
+LLM_MODEL=gemini-3.8-flash
 ```
+
+## Catatan Keamanan
+
+- File `.env` bersifat lokal dan tidak boleh diunggah ke GitHub.
+- Gunakan `.env.example` sebagai template bagi tim atau pengguna lain.
+- Pastikan kunci API tidak dibagikan di commit publik.
 
 ## Struktur Proyek
 
