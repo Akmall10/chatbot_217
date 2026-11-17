@@ -1,15 +1,21 @@
 {
   "name": "pws-10",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chatbot AI berbasis Gemini dengan Express dan frontend interaktif",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "chatbot",
+    "gemini",
+    "express",
+    "javascript"
+  ],
+  "author": "Akmall10",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
