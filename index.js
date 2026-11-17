@@ -7,7 +7,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.disable("x-powered-by");
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 function getGeminiConfig() {
@@ -16,6 +18,16 @@ function getGeminiConfig() {
         baseUrl: process.env.LLM_BASE_URL,
         model: process.env.LLM_MODEL,
     };
+}
+
+function normalizeMessages(messages) {
+    return (Array.isArray(messages) ? messages : [])
+        .filter((msg) => msg && typeof msg === "object")
+        .map((msg) => ({
+            role: msg.role || "user",
+            content: String(msg.content || "").trim(),
+        }))
+        .filter((msg) => msg.content);
 }
 
 // Halaman utama
@@ -52,13 +64,7 @@ app.post("/api/chat", async (req, res) => {
             });
         }
 
-        const sanitizedMessages = messages
-            .filter((msg) => msg && typeof msg === "object")
-            .map((msg) => ({
-                role: msg.role || "user",
-                content: String(msg.content || "").trim()
-            }))
-            .filter((msg) => msg.content);
+        const sanitizedMessages = normalizeMessages(messages);
 
         if (sanitizedMessages.length === 0) {
             return res.status(400).json({
