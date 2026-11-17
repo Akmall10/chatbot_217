@@ -252,6 +252,10 @@ button, textarea {
     border-radius: 10px;
 }
 
+.chat-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 /* ==============================
    WELCOME SCREEN
 ============================== */
@@ -541,10 +545,15 @@ button, textarea {
 
     .suggestion {
         text-align: left;
+        width: 100%;
     }
 
     .message-body {
         max-width: 85%;
+    }
+
+    .chat-content {
+        padding-top: 10px;
     }
 
     .input-form button {
