@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chatbot AI - Gemini Assistant</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">✦</div>
+
+                <div>
+                    <h2>Gemini</h2>
+                    <span>AI Assistant</span>
+                </div>
+            </div>
+
+            <button class="new-chat" id="newChat">
+                <span>＋</span> Percakapan Baru
+            </button>
+
+            <div class="sidebar-section">
+                <p class="section-title">ASISTEN AI</p>
+
+                <div class="sidebar-item active">
+                    <span>✧</span>
+                    Chat Assistant
+                </div>
+
+                <div class="sidebar-item">
+                    <span>◈</span>
+                    Gemini AI
+                </div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="profile">
+                    <div class="profile-avatar">A</div>
+
+                    <div>
+                        <strong>Pengguna</strong>
+                        <span>Personal Workspace</span>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Header -->
+            <header class="topbar">
+
+                <div>
+                    <span class="breadcrumb">WORKSPACE / CHAT</span>
+                    <h1>Chat Assistant</h1>
+                </div>
+
+                <div class="status">
+                    <span class="status-dot"></span>
+                    Gemini Online
+                </div>
+
+            </header>
+
+            <!-- Chat Area -->
+            <section class="chat-wrapper">
+
+                <div class="chat-content" id="chatMessages">
+
+                    <div class="welcome-screen" id="welcomeScreen">
+
+                        <div class="welcome-icon">✦</div>
+
+                        <p class="welcome-subtitle">
+                            YOUR PERSONAL AI ASSISTANT
+                        </p>
+
+                        <h2>
+                            Ada yang bisa saya<br>
+                            bantu hari ini?
+                        </h2>
+
+                        <p class="welcome-description">
+                            Mulai percakapan dan temukan berbagai ide,
+                            informasi, serta solusi bersama Gemini AI.
+                        </p>
+
+                        <div class="suggestions">
+
+                            <button class="suggestion">
+                                <span>✧</span>
+                                Jelaskan tentang Artificial Intelligence
+                            </button>
+
+                            <button class="suggestion">
+                                <span>⌘</span>
+                                Bantu saya membuat program
+                            </button>
+
+                            <button class="suggestion">
+                                <span>◈</span>
+                                Berikan ide kreatif untuk saya
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Input -->
+                <div class="input-section">
+
+                    <form id="chatForm" class="input-form">
+
+                        <textarea
+                            id="userInput"
+                            placeholder="Tulis pesan kamu di sini..."
+                            rows="1"
+                            required
+                        ></textarea>
+
+                        <button type="submit" id="sendButton">
+                            <span>Kirim</span>
+                            <span class="send-icon">➤</span>
+                        </button>
+
+                    </form>
+
+                    <p class="input-note">
+                        Gemini AI dapat membuat kesalahan.
+                        Periksa kembali informasi penting.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
