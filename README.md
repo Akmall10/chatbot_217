@@ -47,6 +47,12 @@ LLM_MODEL=gemini-3.8-flash
 - Gunakan `.env.example` sebagai template bagi tim atau pengguna lain.
 - Pastikan kunci API tidak dibagikan di commit publik.
 
+## Persiapan Publish ke GitHub
+
+1. Pastikan semua perubahan sudah di-commit.
+2. Atur origin ke repository yang diinginkan.
+3. Jalankan `git push -u origin main` untuk mengunggah branch utama.
+
 ## Struktur Proyek
 
 - `index.js` : server backend
