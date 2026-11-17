@@ -11,7 +11,7 @@
 
 body {
     font-family: 'DM Sans', sans-serif;
-    background: #f5f4f0;
+    background: linear-gradient(135deg, #f7f4ee 0%, #f1efe8 100%);
     color: #26344a;
     height: 100vh;
     overflow: hidden;
@@ -61,6 +61,7 @@ button, textarea {
     place-items: center;
     color: #26344a;
     font-size: 25px;
+    box-shadow: 0 10px 22px rgba(217, 183, 124, 0.4);
 }
 
 .brand h2 {
@@ -124,6 +125,10 @@ button, textarea {
 .sidebar-item.active {
     background: #34435b;
     color: white;
+}
+
+.sidebar-item:hover {
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .sidebar-bottom {
@@ -199,12 +204,13 @@ button, textarea {
     display: flex;
     align-items: center;
     gap: 9px;
-    background: white;
+    background: rgba(255, 255, 255, 0.8);
     border: 1px solid #e9e3d8;
     padding: 10px 16px;
     border-radius: 30px;
     font-size: 11px;
     color: #596578;
+    backdrop-filter: blur(6px);
 }
 
 .status-dot {

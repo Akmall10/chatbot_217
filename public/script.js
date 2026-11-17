@@ -51,6 +51,10 @@ function addMessage(role, content) {
 // Indikator mengetik
 function showTyping() {
 
+    if (document.getElementById("typingIndicator")) {
+        return;
+    }
+
     const typing = document.createElement("div");
     typing.className = "typing";
     typing.id = "typingIndicator";
@@ -78,6 +82,7 @@ async function sendMessage(text) {
     isLoading = true;
 
     sendButton.disabled = true;
+    userInput.disabled = true;
 
     addMessage("user", text);
 
@@ -226,6 +231,7 @@ async function sendMessage(text) {
         isLoading = false;
 
         sendButton.disabled = false;
+        userInput.disabled = false;
 
         userInput.focus();
 
@@ -264,11 +270,7 @@ userInput.addEventListener("input", () => {
 
 });
 
-// Percakapan baru
-newChatButton.addEventListener("click", () => {
-
-    if (isLoading) return;
-
+function resetConversation() {
     messages = [];
 
     chatMessages.innerHTML = `
@@ -313,6 +315,16 @@ newChatButton.addEventListener("click", () => {
     `;
 
     userInput.value = "";
+    userInput.style.height = "auto";
+}
+
+// Percakapan baru
+newChatButton.addEventListener("click", () => {
+
+    if (isLoading) return;
+
+    removeTyping();
+    resetConversation();
 
 });
 
