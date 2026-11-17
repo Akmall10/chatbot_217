@@ -75,6 +75,30 @@ function removeTyping() {
 }
 
 // Mengirim pesan
+function extractStreamPayload(buffer) {
+    const lines = buffer.split("\n");
+    const payloads = [];
+
+    for (const rawLine of lines) {
+        const line = rawLine.trim();
+
+        if (!line.startsWith("data:")) continue;
+
+        const data = line.slice(5).trim();
+
+        if (!data || data === "[DONE]") continue;
+
+        try {
+            const parsed = JSON.parse(data);
+            payloads.push(parsed);
+        } catch (error) {
+            // Abaikan chunk yang belum selesai atau tidak valid
+        }
+    }
+
+    return payloads;
+}
+
 async function sendMessage(text) {
 
     if (!text.trim() || isLoading) return;
@@ -132,7 +156,6 @@ async function sendMessage(text) {
 
         let buffer = "";
 
-        // Membaca streaming
         while (true) {
 
             const { value, done } = await reader.read();
@@ -143,64 +166,27 @@ async function sendMessage(text) {
                 stream: true
             });
 
-            const lines = buffer.split("\n");
+            const payloads = extractStreamPayload(buffer);
+            buffer = buffer.replace(/(?:^|\n)data:.*(?:\n|$)/g, "");
 
-            buffer = lines.pop() || "";
+            for (const json of payloads) {
+                const content = json.choices?.[0]?.delta?.content;
 
-            for (const line of lines) {
-
-                const trimmed = line.trim();
-
-                if (!trimmed.startsWith("data:")) continue;
-
-                const data = trimmed.slice(5).trim();
-
-                if (data === "[DONE]") continue;
-
-                try {
-
-                    const json = JSON.parse(data);
-
-                    const content =
-                        json.choices?.[0]?.delta?.content;
-
-                    if (typeof content === "string") {
-
-                        fullResponse += content;
-
-                        responseText.textContent = fullResponse;
-
-                        chatMessages.scrollTop =
-                            chatMessages.scrollHeight;
-                    }
-
-                } catch (error) {
-                    // Mengabaikan data streaming yang belum lengkap
+                if (typeof content === "string") {
+                    fullResponse += content;
+                    responseText.textContent = fullResponse;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
             }
         }
 
-        // Memproses sisa buffer
-        buffer += decoder.decode();
+        const finalPayloads = extractStreamPayload(buffer + decoder.decode());
 
-        if (buffer.trim().startsWith("data:")) {
+        for (const json of finalPayloads) {
+            const content = json.choices?.[0]?.delta?.content;
 
-            const data = buffer.trim().slice(5).trim();
-
-            if (data !== "[DONE]") {
-
-                try {
-
-                    const json = JSON.parse(data);
-
-                    const content =
-                        json.choices?.[0]?.delta?.content;
-
-                    if (typeof content === "string") {
-                        fullResponse += content;
-                    }
-
-                } catch (error) {}
+            if (typeof content === "string") {
+                fullResponse += content;
             }
         }
 
